@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
+import usersService from './services/usersService';
+import CardList from './components/card-list/card-list';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  state = {
+    monsters: []
+  }
+
+  componentDidMount () {
+    const getUsers = async () => {
+      try {
+        let response = await usersService.getUsers()
+        response = response.data;
+
+        this.setState({monsters: response})
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    getUsers();
+  }
+
+  render () {
+    const { monsters } = this.state
+    return (
+      <div className="App">
+        <CardList
+          monsters={monsters}
+        />
+      </div>
+    );
+  }
 }
 
 export default App;
