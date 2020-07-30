@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import './App.css';
 import usersService from './services/usersService';
 import CardList from './components/card-list/card-list';
+import SearchBox from './components/search-box/search-box';
 
 class App extends Component {
   state = {
-    monsters: []
+    monsters: [],
+    searchField: ''
   }
 
   componentDidMount () {
@@ -23,12 +25,30 @@ class App extends Component {
     getUsers();
   }
 
+  handleInputChange = (event) => {
+    let input = event.target.value;
+    this.setState(prev => (
+      {
+        ...prev,
+        searchField: input
+      }
+    ))    
+  }
+
   render () {
-    const { monsters } = this.state
+    const { monsters, searchField } = this.state
+    const filteredMonsters = monsters.filter(monster => 
+      monster.name.toLowerCase().includes(searchField.toLowerCase()));
     return (
-      <div className="App">
+      <div className="App"> 
+        <h1>Monsters Rolodex</h1>
+        <SearchBox
+          placeholder="search monsters"
+          handleInputChange={this.handleInputChange}
+          searchField={searchField}
+        />       
         <CardList
-          monsters={monsters}
+          monsters={filteredMonsters}
         />
       </div>
     );
